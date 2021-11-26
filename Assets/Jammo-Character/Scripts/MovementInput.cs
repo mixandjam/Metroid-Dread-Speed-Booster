@@ -49,29 +49,32 @@ public class MovementInput : MonoBehaviour
 
 	void PlayerMoveAndRotation()
 	{
-		var camera = Camera.main;
-		var forward = cam.transform.forward;
-		var right = cam.transform.right;
+		//var camera = Camera.main;
+		//var forward = cam.transform.forward;
+		//var right = cam.transform.right;
 
-		forward.y = 0f;
-		right.y = 0f;
+		//forward.y = 0f;
+		//right.y = 0f;
 
-		forward.Normalize();
-		right.Normalize();
+		//forward.Normalize();
+		//right.Normalize();
 
-		desiredMoveDirection = forward * moveAxis.y + right * moveAxis.x;
+		//desiredMoveDirection = forward * moveAxis.y + right * moveAxis.x;
 
-		if (blockRotationPlayer == false)
-		{
-			//Camera
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), rotationSpeed * acceleration);
-			controller.Move(desiredMoveDirection * Time.deltaTime * (movementSpeed * acceleration));
-		}
-		else
-		{
-			//Strafe
-			controller.Move((transform.forward * moveAxis.y + transform.right * moveAxis.y) * Time.deltaTime * (movementSpeed * acceleration));
-		}
+		//if (blockRotationPlayer == false)
+		//{
+		//	//Camera
+		//	transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), rotationSpeed * acceleration);
+		//	controller.Move(desiredMoveDirection * Time.deltaTime * (movementSpeed * acceleration));
+		//}
+		//else
+		//{
+		//	//Strafe
+		//	controller.Move((transform.forward * moveAxis.y + transform.right * moveAxis.y) * Time.deltaTime * (movementSpeed * acceleration));
+		//}
+
+		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(new Vector3(moveAxis.x, 0, 0)), rotationSpeed * acceleration);
+		controller.Move(new Vector3(moveAxis.x, 0,0) * Time.deltaTime * (movementSpeed * acceleration));
 	}
 
 	public void LookAt(Vector3 pos)
@@ -93,7 +96,7 @@ public class MovementInput : MonoBehaviour
 	void InputMagnitude()
 	{
 		//Calculate the Input Magnitude
-		float inputMagnitude = new Vector2(moveAxis.x, moveAxis.y).sqrMagnitude;
+		float inputMagnitude = new Vector2(moveAxis.x,0).sqrMagnitude;
 
 		//Physically move player
 		if (inputMagnitude > 0.1f)
