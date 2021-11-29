@@ -16,6 +16,7 @@ public class MovementInput : MonoBehaviour
 
 	[Header("Settings")]
 	[SerializeField] float movementSpeed;
+	float speedMultiplier = 1;
 	[SerializeField] float rotationSpeed = 0.1f;
 	[SerializeField] float fallSpeed = .2f;
 	public float acceleration = 1;
@@ -24,17 +25,23 @@ public class MovementInput : MonoBehaviour
 	[SerializeField] bool blockRotationPlayer;
 	private bool isGrounded;
 
+	public float characterSpeed;
+	private SpeedBooster speedBooster;
 
 	void Start()
 	{
 		anim = this.GetComponent<Animator>();
 		cam = Camera.main;
 		controller = this.GetComponent<CharacterController>();
+		speedBooster = GetComponent<SpeedBooster>();
 	}
 
 	void Update()
 	{
 		InputMagnitude();
+
+		characterSpeed = controller.velocity.normalized.x;
+
 
 		isGrounded = controller.isGrounded;
 
@@ -49,32 +56,10 @@ public class MovementInput : MonoBehaviour
 
 	void PlayerMoveAndRotation()
 	{
-		//var camera = Camera.main;
-		//var forward = cam.transform.forward;
-		//var right = cam.transform.right;
-
-		//forward.y = 0f;
-		//right.y = 0f;
-
-		//forward.Normalize();
-		//right.Normalize();
-
-		//desiredMoveDirection = forward * moveAxis.y + right * moveAxis.x;
-
-		//if (blockRotationPlayer == false)
-		//{
-		//	//Camera
-		//	transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), rotationSpeed * acceleration);
-		//	controller.Move(desiredMoveDirection * Time.deltaTime * (movementSpeed * acceleration));
-		//}
-		//else
-		//{
-		//	//Strafe
-		//	controller.Move((transform.forward * moveAxis.y + transform.right * moveAxis.y) * Time.deltaTime * (movementSpeed * acceleration));
-		//}
 
 		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(new Vector3(moveAxis.x, 0, 0)), rotationSpeed * acceleration);
-		controller.Move(new Vector3(moveAxis.x, 0,0) * Time.deltaTime * (movementSpeed * acceleration));
+		controller.Move(new Vector3((movementSpeed * speedMultiplier) * (moveAxis.x > 0 ? 1 : -1), 0,0) * Time.deltaTime * (acceleration));
+
 	}
 
 	public void LookAt(Vector3 pos)
@@ -101,12 +86,12 @@ public class MovementInput : MonoBehaviour
 		//Physically move player
 		if (inputMagnitude > 0.1f)
 		{
-			anim.SetFloat("InputMagnitude", inputMagnitude * acceleration, .1f, Time.deltaTime);
+			anim.SetFloat("InputMagnitude", (inputMagnitude * acceleration) + (speedBooster.isActive() ? 1 : 0), .05f, Time.deltaTime);
 			PlayerMoveAndRotation();
 		}
 		else
 		{
-			anim.SetFloat("InputMagnitude", inputMagnitude * acceleration, .1f,Time.deltaTime);
+			anim.SetFloat("InputMagnitude", 0, .05f,Time.deltaTime);
 		}
 	}
 
@@ -123,5 +108,10 @@ public class MovementInput : MonoBehaviour
 	private void OnDisable()
 	{
 		anim.SetFloat("InputMagnitude", 0);
+	}
+
+	public void SetSpeedMultiplier(float value)
+	{
+		speedMultiplier = value;
 	}
 }
