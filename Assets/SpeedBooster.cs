@@ -33,6 +33,7 @@ public class SpeedBooster : MonoBehaviour
     [SerializeField]
     public ParticleSystem chestParticle;
     public ParticleSystem feetParticle;
+    public GameObject distortion;
 
     // Start is called before the first frame update
     void Start()
@@ -86,6 +87,7 @@ public class SpeedBooster : MonoBehaviour
     {
         chargingSpeedBooster = false;
         activeSpeedBooster = state;
+        distortion.SetActive(state);
 
         if (!state)
         {
