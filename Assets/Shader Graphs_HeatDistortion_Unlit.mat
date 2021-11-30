@@ -50,10 +50,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HeatDistortion: 0.066
-    - _NoiseScale: 29.1
+    - _HeatDistortion: 0.081
+    - _NoiseScale: 20
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _DistortionSpeed: {r: 0, g: 2, b: 0, a: 0}
+    - _DistortionSpeed: {r: 0, g: 4, b: 0, a: 0}
   m_BuildTextureStacks: []
