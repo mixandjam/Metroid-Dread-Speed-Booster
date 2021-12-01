@@ -32,6 +32,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _DistortionMask:
+        m_Texture: {fileID: 2800000, guid: e454923f6a02461418a11d4fa540238a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Mask:
         m_Texture: {fileID: 2800000, guid: e454923f6a02461418a11d4fa540238a, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -50,10 +54,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HeatDistortion: 0.081
+    - _DistortionAmount: 0.1
+    - _DistortionNoiseScale: 20
+    - _EffectAmount: 0
+    - _HeatDistortion: 0.1
     - _NoiseScale: 20
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _SmokeNoiseScale: 15
     m_Colors:
-    - _DistortionSpeed: {r: 0, g: 4, b: 0, a: 0}
+    - _DistortionSpeed: {r: 0, g: 5, b: 0, a: 0}
+    - _SmokeSpeed: {r: 0, g: 5, b: 0, a: 0}
   m_BuildTextureStacks: []

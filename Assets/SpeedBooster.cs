@@ -87,7 +87,7 @@ public class SpeedBooster : MonoBehaviour
     {
         chargingSpeedBooster = false;
         activeSpeedBooster = state;
-        distortion.SetActive(state);
+        DOVirtual.Float(state ? 0 : 1, state ? 1 : 0, .1f, SetDistortionEffect);
 
         if (!state)
         {
@@ -103,6 +103,11 @@ public class SpeedBooster : MonoBehaviour
         GetComponent<CinemachineImpulseSource>().GenerateImpulse();
 
         Rumble(.2f, .25f, .75f);
+    }
+
+    void SetDistortionEffect(float amount)
+    {
+        distortion.GetComponent<Renderer>().material.SetFloat("_EffectAmount", amount);
     }
 
     void ChargeShineSpark(bool state)
