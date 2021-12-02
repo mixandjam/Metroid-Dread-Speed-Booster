@@ -24,7 +24,8 @@ public class MovementInput : MonoBehaviour
 
 	[Header("Booleans")]
 	[SerializeField] bool blockRotationPlayer;
-	private bool isGrounded;
+	[SerializeField] private bool isGrounded;
+	[SerializeField] private bool isSliding;
 
 	public float characterSpeed;
 	private SpeedBooster speedBooster;
@@ -89,15 +90,20 @@ public class MovementInput : MonoBehaviour
 
 	void OnSlide()
 	{
-		anim.SetTrigger("Slide");
 
+		if (isSliding)
+			return;
+
+		anim.SetTrigger("Slide");
 		StartCoroutine(SlideCoroutine());
 
 		IEnumerator SlideCoroutine()
 		{
+			isSliding = true;
 			controller.height = 0;
 			controller.center = new Vector3(0, 0.38f, 0);
 			yield return new WaitForSeconds(.5f);
+			isSliding = false;
 			controller.height = 1.8f;
 			controller.center = new Vector3(0, 1, 0);
 		}
