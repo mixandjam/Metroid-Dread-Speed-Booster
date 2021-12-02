@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -42,7 +43,6 @@ public class MovementInput : MonoBehaviour
 
 		characterSpeed = controller.velocity.normalized.x;
 
-
 		isGrounded = controller.isGrounded;
 
 		if (isGrounded)
@@ -60,22 +60,6 @@ public class MovementInput : MonoBehaviour
 		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(new Vector3(moveAxis.x, 0, 0)), rotationSpeed * acceleration);
 		controller.Move(new Vector3((movementSpeed * speedMultiplier) * (moveAxis.x > 0 ? 1 : -1), 0,0) * Time.deltaTime * (acceleration));
 
-	}
-
-	public void LookAt(Vector3 pos)
-	{
-		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(pos), rotationSpeed);
-	}
-
-	public void RotateToCamera(Transform t)
-	{
-		var forward = cam.transform.forward;
-
-		desiredMoveDirection = forward;
-		Quaternion lookAtRotation = Quaternion.LookRotation(desiredMoveDirection);
-		Quaternion lookAtRotationOnly_Y = Quaternion.Euler(transform.rotation.eulerAngles.x, lookAtRotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-
-		t.rotation = Quaternion.Slerp(transform.rotation, lookAtRotationOnly_Y, rotationSpeed);
 	}
 
 	void InputMagnitude()
@@ -101,6 +85,31 @@ public class MovementInput : MonoBehaviour
 	{
 		moveAxis.x = value.Get<Vector2>().x;
 		moveAxis.y = value.Get<Vector2>().y;
+	}
+
+	void OnSlide()
+	{
+		anim.SetTrigger("Slide");
+
+		StartCoroutine(SlideCoroutine());
+
+		IEnumerator SlideCoroutine()
+		{
+			controller.height = 0;
+			controller.center = new Vector3(0, 0.38f, 0);
+			yield return new WaitForSeconds(.5f);
+			controller.height = 1.8f;
+			controller.center = new Vector3(0, 1, 0);
+		}
+	}
+
+	void OnJump() 
+	{
+		Vector3 velocity = new Vector3();
+
+		velocity.y = 10;
+
+		controller.Move(velocity * Time.deltaTime);
 	}
 
 	#endregion

@@ -23,6 +23,9 @@
         },
         {
             "m_Id": "07d018a8cb914867bed471906d058dcb"
+        },
+        {
+            "m_Id": "9c4775f7458447ddb12e0f9e120daf9c"
         }
     ],
     "m_Keywords": [],
@@ -173,6 +176,9 @@
         },
         {
             "m_Id": "bc50bab9d5ff40c5ba9b2899645e31c8"
+        },
+        {
+            "m_Id": "90154371e29945cb9bbf500b00b9bdb5"
         }
     ],
     "m_GroupDatas": [
@@ -577,6 +583,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "90154371e29945cb9bbf500b00b9bdb5"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "f0fe1ce276f74323a6fae7f9b66f647d"
+                },
+                "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "a755a9ea670942eb926d2aa1956605f3"
                 },
                 "m_SlotId": 3
@@ -909,6 +929,21 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "028af84193eb47328ff0737b2afd1707",
+    "m_Id": 0,
+    "m_DisplayName": "SmokeAmount",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
@@ -2932,6 +2967,9 @@
         },
         {
             "m_Id": "845db9fca8f9473e886e76de62dc179d"
+        },
+        {
+            "m_Id": "9c4775f7458447ddb12e0f9e120daf9c"
         }
     ]
 }
@@ -4123,6 +4161,41 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "90154371e29945cb9bbf500b00b9bdb5",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -1720.9998779296875,
+            "y": 1249.0,
+            "width": 150.9998779296875,
+            "height": 34.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "028af84193eb47328ff0737b2afd1707"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "9c4775f7458447ddb12e0f9e120daf9c"
+    }
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicValueMaterialSlot",
     "m_ObjectId": "996b231cbdaf41d591f56ed1a7783cdf",
     "m_Id": 0,
@@ -4166,6 +4239,33 @@
         "e31": 0.0,
         "e32": 0.0,
         "e33": 1.0
+    }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "9c4775f7458447ddb12e0f9e120daf9c",
+    "m_Guid": {
+        "m_GuidSerialized": "8887be6c-17c6-4c54-b2a1-399526f2d8c8"
+    },
+    "m_Name": "SmokeAmount",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "SmokeAmount",
+    "m_DefaultReferenceName": "_SmokeAmount",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.5,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
     }
 }
 
@@ -4341,9 +4441,9 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -29.0001163482666,
-            "y": 558.9999389648438,
-            "width": 208.00003051757813,
+            "x": -91.00004577636719,
+            "y": -170.00001525878907,
+            "width": 208.00009155273438,
             "height": 302.0
         }
     },
@@ -5701,10 +5801,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1699.0,
-            "y": 1118.0,
-            "width": 208.0,
-            "height": 302.0
+            "x": -1510.0,
+            "y": 1108.0,
+            "width": 126.0,
+            "height": 118.0
         }
     },
     "m_Slots": [
@@ -5724,7 +5824,7 @@
         "x"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": true,
+    "m_PreviewExpanded": false,
     "m_PreviewMode": 0,
     "m_CustomColors": {
         "m_SerializableColors": []
@@ -5888,8 +5988,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1228.0001220703125,
-            "y": 1118.0001220703125,
+            "x": -1311.0,
+            "y": 1108.0,
             "width": 208.0,
             "height": 302.0
         }
