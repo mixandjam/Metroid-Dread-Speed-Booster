@@ -70,3 +70,4 @@ expandedQueries = [
 queryBuilder = false
 ignoredProperties = "id;name;classname;imagecontentshash"
 helperWidgetCurrentArea = "all"
+disabledIndexers = ""

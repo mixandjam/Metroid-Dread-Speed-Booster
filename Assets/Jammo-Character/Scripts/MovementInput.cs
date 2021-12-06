@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +9,7 @@ public class MovementInput : MonoBehaviour
 	private Animator anim;
 	private Camera cam;
 	private CharacterController controller;
+	private PlayerInput input;
 
 	private Vector3 desiredMoveDirection;
 	private Vector3 moveVector;
@@ -26,9 +28,11 @@ public class MovementInput : MonoBehaviour
 	[SerializeField] bool blockRotationPlayer;
 	[SerializeField] private bool isGrounded;
 	[SerializeField] private bool isSliding;
+	[SerializeField] private bool isTranslating;
 
 	public float characterSpeed;
 	private SpeedBooster speedBooster;
+
 
 	void Start()
 	{
@@ -36,11 +40,40 @@ public class MovementInput : MonoBehaviour
 		cam = Camera.main;
 		controller = this.GetComponent<CharacterController>();
 		speedBooster = GetComponent<SpeedBooster>();
+		input = GetComponent<PlayerInput>();
+
+
+		input.actions["Jump"].started += Jumpcallback;
+		input.actions["Jump"].canceled += Jumpcallback;
 	}
 
 	void Update()
 	{
-		InputMagnitude();
+		if (isTranslating)
+		{
+			controller.Move(new Vector3(movementSpeed * 2, movementSpeed * 2, 0) * Time.deltaTime * (acceleration));
+			return;
+		}
+
+		if (isSliding)
+		{
+			controller.Move(new Vector3((movementSpeed * speedMultiplier) * (characterSpeed > 0 ? 1 : -1), 0, 0) * Time.deltaTime * (acceleration));
+			return;
+		}
+
+		float inputMagnitude = new Vector2(moveAxis.x, 0).sqrMagnitude;
+
+		//Physically move player
+		if (inputMagnitude > 0.1f)
+		{
+			anim.SetFloat("InputMagnitude", (inputMagnitude * acceleration) + (speedBooster.isActive() ? 1 : 0), .05f, Time.deltaTime);
+			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(new Vector3(moveAxis.x, 0, 0)), rotationSpeed * acceleration);
+			controller.Move(new Vector3((movementSpeed * speedMultiplier) * (moveAxis.x > 0 ? 1 : -1), 0, 0) * Time.deltaTime * (acceleration));
+		}
+		else
+		{
+			anim.SetFloat("InputMagnitude", 0, .05f, Time.deltaTime);
+		}
 
 		characterSpeed = controller.velocity.normalized.x;
 
@@ -53,31 +86,7 @@ public class MovementInput : MonoBehaviour
 
 		moveVector = new Vector3(0, verticalVel * fallSpeed * Time.deltaTime, 0);
 		controller.Move(moveVector);
-	}
 
-	void PlayerMoveAndRotation()
-	{
-
-		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(new Vector3(moveAxis.x, 0, 0)), rotationSpeed * acceleration);
-		controller.Move(new Vector3((movementSpeed * speedMultiplier) * (moveAxis.x > 0 ? 1 : -1), 0,0) * Time.deltaTime * (acceleration));
-
-	}
-
-	void InputMagnitude()
-	{
-		//Calculate the Input Magnitude
-		float inputMagnitude = new Vector2(moveAxis.x,0).sqrMagnitude;
-
-		//Physically move player
-		if (inputMagnitude > 0.1f)
-		{
-			anim.SetFloat("InputMagnitude", (inputMagnitude * acceleration) + (speedBooster.isActive() ? 1 : 0), .05f, Time.deltaTime);
-			PlayerMoveAndRotation();
-		}
-		else
-		{
-			anim.SetFloat("InputMagnitude", 0, .05f,Time.deltaTime);
-		}
 	}
 
 	#region Input
@@ -92,6 +101,11 @@ public class MovementInput : MonoBehaviour
 	{
 
 		if (isSliding)
+			return;
+
+		float inputMagnitude = new Vector2(moveAxis.x, 0).sqrMagnitude;
+
+		if (inputMagnitude < 0.1f)
 			return;
 
 		anim.SetTrigger("Slide");
@@ -109,13 +123,9 @@ public class MovementInput : MonoBehaviour
 		}
 	}
 
-	void OnJump() 
+	private void Jumpcallback(InputAction.CallbackContext context)
 	{
-		Vector3 velocity = new Vector3();
-
-		velocity.y = 10;
-
-		controller.Move(velocity * Time.deltaTime);
+		//isJumpPressed = context.ReadValueAsButton();
 	}
 
 	#endregion
