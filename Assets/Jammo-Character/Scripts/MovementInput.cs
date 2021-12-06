@@ -29,9 +29,13 @@ public class MovementInput : MonoBehaviour
 	[SerializeField] private bool isGrounded;
 	[SerializeField] private bool isSliding;
 	[SerializeField] private bool isTranslating;
+	[SerializeField] private bool isJumpPressed;
+
 
 	public float characterSpeed;
 	private SpeedBooster speedBooster;
+	public float gravity = -12;
+	public float jumpHeight = 9;
 
 
 	void Start()
@@ -76,9 +80,29 @@ public class MovementInput : MonoBehaviour
 		}
 
 		characterSpeed = controller.velocity.normalized.x;
-
 		isGrounded = controller.isGrounded;
 
+		if (isGrounded)
+		{
+			verticalVel = gravity * Time.deltaTime;
+			if (isJumpPressed)
+			{
+				verticalVel = Mathf.Sqrt(jumpHeight * -2f * gravity);
+				anim.SetTrigger("Jump");
+			}
+		}
+		else
+		{
+			verticalVel -= Math.Abs(gravity) * Time.deltaTime;
+
+		}
+
+		moveVector = new Vector3(0, verticalVel, 0);
+		controller.Move(moveVector * Time.deltaTime);
+
+		anim.SetBool("isGrounded", isGrounded);
+			
+		/*
 		if (isGrounded)
 			verticalVel -= 0;
 		else
@@ -86,6 +110,7 @@ public class MovementInput : MonoBehaviour
 
 		moveVector = new Vector3(0, verticalVel * fallSpeed * Time.deltaTime, 0);
 		controller.Move(moveVector);
+		*/
 
 	}
 
@@ -125,7 +150,7 @@ public class MovementInput : MonoBehaviour
 
 	private void Jumpcallback(InputAction.CallbackContext context)
 	{
-		//isJumpPressed = context.ReadValueAsButton();
+		isJumpPressed = context.ReadValueAsButton();
 	}
 
 	#endregion
