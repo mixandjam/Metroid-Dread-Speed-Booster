@@ -122,7 +122,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaAmount: 0
+    - _AlphaAmount: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -132,23 +132,23 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _Distortion: 0
+    - _Distortion: 1
     - _DistortionAmount: 0
     - _DistortionNoiseScale: 3
     - _DstBlend: 0
-    - _EffectAmount: 0
+    - _EffectAmount: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _Noise: 0
+    - _Noise: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoke: 0
+    - _Smoke: 1
     - _SmokeAmount: 1
     - _SmokeNoiseScale: 20
     - _Smoothness: 0.5
@@ -156,8 +156,8 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _TextureType: 0
-    - _TilingSpeed: 0
+    - _TextureType: 1
+    - _TilingSpeed: 1.97
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
