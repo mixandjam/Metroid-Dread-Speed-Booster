@@ -157,7 +157,7 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _TextureType: 1
-    - _TilingSpeed: 1.97
+    - _TilingSpeed: 1.6
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

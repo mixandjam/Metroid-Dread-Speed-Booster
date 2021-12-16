@@ -28,7 +28,6 @@ public class MovementInput : MonoBehaviour
 	[SerializeField] bool blockRotationPlayer;
 	[SerializeField] private bool isGrounded;
 	[SerializeField] private bool isSliding;
-	[SerializeField] private bool isTranslating;
 	[SerializeField] private bool isJumpPressed;
 
 
@@ -53,26 +52,20 @@ public class MovementInput : MonoBehaviour
 
 	void Update()
 	{
-		if (isTranslating)
-		{
-			controller.Move(new Vector3(movementSpeed * 2, movementSpeed * 2, 0) * Time.deltaTime * (acceleration));
-			return;
-		}
 
 		if (isSliding)
 		{
-			controller.Move(new Vector3((movementSpeed * speedMultiplier) * (characterSpeed > 0 ? 1 : -1), 0, 0) * Time.deltaTime * (acceleration));
+			controller.Move(new Vector3((movementSpeed * speedMultiplier) * (characterSpeed > 0 ? 1 : -1), 0, 0) * Time.deltaTime);
 			return;
 		}
 
 		float inputMagnitude = new Vector2(moveAxis.x, 0).sqrMagnitude;
 
-		//Physically move player
 		if (inputMagnitude > 0.1f)
 		{
-			anim.SetFloat("InputMagnitude", (inputMagnitude * acceleration) + (speedBooster.isActive() ? 1 : 0), .05f, Time.deltaTime);
+			controller.Move(new Vector3((movementSpeed * speedMultiplier) * (moveAxis.x > 0 ? 1 : -1), 0, 0) * Time.deltaTime);
 			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(new Vector3(moveAxis.x, 0, 0)), rotationSpeed * acceleration);
-			controller.Move(new Vector3((movementSpeed * speedMultiplier) * (moveAxis.x > 0 ? 1 : -1), 0, 0) * Time.deltaTime * (acceleration));
+			anim.SetFloat("InputMagnitude", inputMagnitude + (speedBooster.isActive() ? 2 : 0), .05f, Time.deltaTime);
 		}
 		else
 		{
@@ -101,16 +94,6 @@ public class MovementInput : MonoBehaviour
 		controller.Move(moveVector * Time.deltaTime);
 
 		anim.SetBool("isGrounded", isGrounded);
-			
-		/*
-		if (isGrounded)
-			verticalVel -= 0;
-		else
-			verticalVel -= 1;
-
-		moveVector = new Vector3(0, verticalVel * fallSpeed * Time.deltaTime, 0);
-		controller.Move(moveVector);
-		*/
 
 	}
 
@@ -118,8 +101,7 @@ public class MovementInput : MonoBehaviour
 
 	public void OnMove(InputValue value)
 	{
-		moveAxis.x = value.Get<Vector2>().x;
-		moveAxis.y = value.Get<Vector2>().y;
+		moveAxis = value.Get<Vector2>();
 	}
 
 	void OnSlide()
