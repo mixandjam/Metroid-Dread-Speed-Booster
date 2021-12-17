@@ -51,7 +51,7 @@ public class SpeedBooster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if((chargingSpeedBooster || activeSpeedBooster) && movement.characterSpeed == 0 && !activeShineSpark)
+        if((chargingSpeedBooster || activeSpeedBooster) && movement.characterVelocity == 0 && !activeShineSpark)
         {
             ChargeSpeedBoost(false);
             SpeedBoost(false);
@@ -91,14 +91,12 @@ public class SpeedBooster : MonoBehaviour
 
         if (!state)
         {
-            movement.SetSpeedMultiplier(1);
             return;
         }
 
         feetParticle.Play();
 
         MaterialChange(0.16f, 2.1f, 1,1, chargeColor);
-        movement.SetSpeedMultiplier(2);
 
         GetComponent<CinemachineImpulseSource>().GenerateImpulse();
 
@@ -153,6 +151,11 @@ public class SpeedBooster : MonoBehaviour
     public bool isActive()
     {
         return activeSpeedBooster;
+    }
+
+    public bool isFullyCharged()
+    {
+        return activeShineSpark;
     }
 
     #region Input
