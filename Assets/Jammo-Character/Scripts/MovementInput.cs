@@ -21,11 +21,12 @@ public class MovementInput : MonoBehaviour
     [SerializeField] LayerMask groundLayerMask;
 
     [Header("Booleans")]
+    [SerializeField] public bool canMove = true;
     [SerializeField] public bool isGrounded;
     [SerializeField] private bool isSliding = false;
-    [SerializeField] bool chargeDash, isDashing = false;
+    [SerializeField] public bool chargeDash, isDashing = false;
     [SerializeField] private bool wallJumped;
-    [SerializeField] private bool dashBreak;
+    [SerializeField] public bool dashBreak;
     private bool desiredJump, desiredSlide, desiredDash = false;
     private bool tryingJump;
 
@@ -66,7 +67,6 @@ public class MovementInput : MonoBehaviour
         moveInput = input.actions["Move"].ReadValue<Vector2>();
         desiredJump |= input.actions["Jump"].WasPressedThisFrame();
         desiredSlide |= input.actions["Slide"].WasPressedThisFrame();
-        desiredDash |= input.actions["Dash"].WasPressedThisFrame();
 
         //Movement
         CheckGrounded();
@@ -84,17 +84,16 @@ public class MovementInput : MonoBehaviour
             if(isGrounded)
             Slide();
         }
-        if (desiredDash)
-        {
-            desiredDash = false;
-            Dash();
-        }
 
         //Animations
         anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * characterVelocity) + (isBoosting ? 1 : 0), .05f, Time.deltaTime);
         anim.SetBool("isGrounded", isGrounded);
 
-        //print(Physics.SphereCast((transform.position - transform.forward *.2f) + Vector3.up, .5f, transform.forward, out RaycastHit info, 1, groundLayerMask));
+        if (chargeDash)
+        {
+            //Rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveInput.x != 0 ? Vector3.right * moveInput.normalized.x : Vector3.right * direction), rotationSpeed/2);
+        }
 
     }
     void CheckDirection()
@@ -103,7 +102,7 @@ public class MovementInput : MonoBehaviour
         {
             if (!wallJumped)
             {
-                if (isBoosting && !touchingWall())
+                if (isBoosting && !TouchingWall())
                 {
                     breakSpeed = movementSpeed * 2;
                     breakDirection = storedDirection;
@@ -120,13 +119,13 @@ public class MovementInput : MonoBehaviour
                     }
                 }
 
-                speedBooster.StopAll(!touchingWall());
+                speedBooster.StopAll(!TouchingWall());
             }
             storedDirection = direction;
         }
     }
 
-    bool touchingWall()
+    bool TouchingWall()
     {
         return Physics.SphereCast((transform.position - transform.forward * .2f) + Vector3.up, .5f, transform.forward, out RaycastHit info, 1, groundLayerMask);
     }
@@ -152,18 +151,22 @@ public class MovementInput : MonoBehaviour
 
     void Move()
     {
+        if (isDashing)
+        {
+            controller.Move(dashVector * movementSpeed * 5 * Time.deltaTime);
+            return;
+        }
+
+        if (!canMove)
+        {
+            return;
+        }
 
         if (speedBreak)
         {
             controller.Move(Vector3.right * breakDirection * breakSpeed * Time.deltaTime);
             verticalVel = isGrounded ? gravity * Time.deltaTime : verticalVel + gravity * Time.deltaTime;
             controller.Move(Vector3.up * verticalVel * Time.deltaTime);
-            return;
-        }
-
-        if (isDashing)
-        {
-            controller.Move(dashVector * movementSpeed * 5 * Time.deltaTime);
             return;
         }
 
@@ -203,6 +206,9 @@ public class MovementInput : MonoBehaviour
     }
     void Jump()
     {
+        if (!canMove)
+            return;
+
         if (!isGrounded)
         {
             StartCoroutine(JumpCoroutine());
@@ -264,35 +270,10 @@ public class MovementInput : MonoBehaviour
         }
     }
 
-    void Dash()
+    public void SetDashVector()
     {
-        if (!canDash || isDashing)
-            return;
-
-        float dashTime = 1;
-        StartCoroutine(DashCoroutine());
-        IEnumerator DashCoroutine()
-        {
-            chargeDash = true;
-            yield return new WaitForSeconds(1f);
-            dashVector = moveInput.normalized;
-
-            isDashing = true;
-            float t = 0;
-            while (t < .2f)
-            {
-                t += Time.deltaTime;
-                yield return new WaitForEndOfFrame();
-            }
-            yield return new WaitUntil(() => dashBreak);
-
-            dashBreak = false;
-            isDashing = false;
-            chargeDash = false;
-
-        }
+        dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
     }
-
     private void OnDisable()
     {
         anim.SetFloat("InputMagnitude", 0);
@@ -318,6 +299,8 @@ public class MovementInput : MonoBehaviour
         if (isDashing)
         {
             dashBreak = true;
+            canMove = true;
+            speedBooster.StopAll(true);
         }
     }
 }

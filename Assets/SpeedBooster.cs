@@ -7,7 +7,7 @@ using DG.Tweening;
 
 public class SpeedBooster : MonoBehaviour
 {
-
+    //Components
     private MovementInput movement;
     private Coroutine speedCharge;
     private Coroutine rumbleCoroutine;
@@ -33,6 +33,7 @@ public class SpeedBooster : MonoBehaviour
     [SerializeField]
     public ParticleSystem chestParticle;
     public ParticleSystem feetParticle;
+    public ParticleSystem spChargeParticle;
     public GameObject distortion;
 
     // Start is called before the first frame update
@@ -178,8 +179,51 @@ public class SpeedBooster : MonoBehaviour
             activeShineSpark = true;
             SpeedBoost(false);
             ChargeShineSpark(true);
-            GetComponent<Animator>().SetTrigger("ChargeShineSpark");
+            GetComponent<Animator>().SetTrigger("StoreEnergy");
+
+            StartCoroutine(CrouchCoroutine());
+            IEnumerator CrouchCoroutine()
+            {
+                movement.canMove = false;
+                yield return new WaitForSeconds(.5f);
+                movement.canMove = true;
+            }
         }
+    }
+
+    void OnDash()
+    {
+        if (!activeShineSpark || !movement.canMove)
+            return;
+
+        movement.canMove = false;
+        spChargeParticle.Play();
+
+        GetComponent<Animator>().SetTrigger("ChargeShineSpark");
+        StartCoroutine(DashCoroutine());
+        IEnumerator DashCoroutine()
+        {
+            movement.chargeDash = true;
+            yield return new WaitForSeconds(1f);
+            movement.SetDashVector();
+            movement.chargeDash = false;
+            movement.isDashing = true;
+
+            spChargeParticle.Stop();
+
+            float t = 0;
+            while (t < .2f)
+            {
+                t += Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            yield return new WaitUntil(() => movement.dashBreak);
+
+            movement.dashBreak = false;
+            movement.isDashing = false;
+
+        }
+
     }
 
     void Rumble(float duration, float lowFrequency, float highFrequency)
