@@ -48,13 +48,19 @@ public class SpeedBooster : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void StopAll(bool shake)
     {
-        if((chargingSpeedBooster || activeSpeedBooster) && movement.characterVelocity == 0 && !activeShineSpark)
+        if ((chargingSpeedBooster || activeSpeedBooster) && !activeShineSpark)
         {
             ChargeSpeedBoost(false);
             SpeedBoost(false);
+
+            if (shake)
+            {
+                GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+                Rumble(.2f, .25f, .75f);
+            }
         }
     }
 
@@ -167,7 +173,7 @@ public class SpeedBooster : MonoBehaviour
 
     void OnDown()
     {
-        if (activeSpeedBooster)
+        if (activeSpeedBooster && movement.isGrounded)
         {
             activeShineSpark = true;
             SpeedBoost(false);
