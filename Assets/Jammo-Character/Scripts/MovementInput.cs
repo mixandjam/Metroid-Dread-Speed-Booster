@@ -23,15 +23,16 @@ public class MovementInput : MonoBehaviour
     [Header("Booleans")]
     [SerializeField] public bool canMove = true;
     [SerializeField] public bool isGrounded;
-    [SerializeField] private bool isSliding = false;
+    [SerializeField] public bool isSliding = false;
     [SerializeField] public bool chargeDash, isDashing = false;
     [SerializeField] private bool wallJumped;
     [SerializeField] public bool dashBreak;
     private bool desiredJump, desiredSlide, desiredDash = false;
     private bool tryingJump;
+    private bool continuingBoost;
 
     private bool isBoosting => speedBooster.isActive();
-    private bool canDash => speedBooster.isFullyCharged();
+    private bool canDash => speedBooster.isEnergyStored();
 
     [Header("Speed Break")]
     [SerializeField] private float breakSpeed;
@@ -72,6 +73,7 @@ public class MovementInput : MonoBehaviour
         CheckGrounded();
         CheckDirection();
         Move();
+
         if (desiredJump)
         {
             desiredJump = false;
@@ -86,7 +88,8 @@ public class MovementInput : MonoBehaviour
         }
 
         //Animations
-        anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * characterVelocity) + (isBoosting ? 1 : 0), .05f, Time.deltaTime);
+        float velocity = CheckForwardContact() ? 0 : characterVelocity;
+        anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * velocity) + (isBoosting ? 1 : 0), .05f, Time.deltaTime);
         anim.SetBool("isGrounded", isGrounded);
 
         if (chargeDash)
@@ -98,9 +101,13 @@ public class MovementInput : MonoBehaviour
     }
     void CheckDirection()
     {
-        if (direction != storedDirection || characterVelocity == 0 || moveInput.x == 0)
+
+        if (continuingBoost)
+            return;
+
+        if (direction != storedDirection || characterVelocity == 0 || moveInput.x == 0 || CheckForwardContact())
         {
-            if (!wallJumped)
+            if (!wallJumped && isGrounded)
             {
                 if (isBoosting && !TouchingWall())
                 {
@@ -144,6 +151,7 @@ public class MovementInput : MonoBehaviour
         return (Physics.Raycast(transform.position + (transform.up * .5f), Vector3.up, 1.5f,groundLayerMask));
     }
 
+
     bool CheckForwardContact()
     {
         return (Physics.Raycast(transform.position + (transform.up * .7f), transform.forward, .5f, groundLayerMask));
@@ -151,6 +159,7 @@ public class MovementInput : MonoBehaviour
 
     void Move()
     {
+
         if (isDashing)
         {
             controller.Move(dashVector * movementSpeed * 5 * Time.deltaTime);
@@ -186,6 +195,10 @@ public class MovementInput : MonoBehaviour
         if ((!isMoving && !isSliding) || chargeDash)
             speed = 0;
 
+        if(!isGrounded && speedBooster.isActive())
+        {
+            speed = movementSpeed * (isBoosting ? 2 : 1);
+        }
 
         //Set final direction
         direction = wallJumped ? tempDirection : direction;
@@ -244,7 +257,7 @@ public class MovementInput : MonoBehaviour
     }
     void Slide()
     {
-        if (moveInput.x == 0 || isSliding)
+        if (moveInput.x == 0 || isSliding || !canMove)
             return;
 
         if (!isBoosting)
@@ -264,19 +277,32 @@ public class MovementInput : MonoBehaviour
         void SetSlide(bool slide)
         {
             isSliding = slide;
-            controller.height = slide ? 0 : 1.8f;
-            controller.center = Vector3.up * (slide ? 0.38f : 1);
+            controller.height = slide ? 0 : 1.3f;
+            controller.center = Vector3.up * (slide ? 0.38f : .72f);
             anim.SetBool("isSliding", slide);
         }
     }
 
     public void SetDashVector()
     {
-        dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
-    }
-    private void OnDisable()
-    {
-        anim.SetFloat("InputMagnitude", 0);
+        //InputDirection - Vector2 which you get from your typical joystick
+
+        float angle = Mathf.Atan2(moveInput.x, moveInput.y) * Mathf.Rad2Deg;
+        angle = Mathf.Round(angle / 45.0f) * 45.0f;
+
+        switch (angle)
+        {
+            default: dashVector = Vector2.up; break; // UP
+            case -180: dashVector = -Vector2.up; break; // DOWN
+            case 90: dashVector = new Vector2(1,.001f); direction = 1; storedDirection = 1; break; //RIGHT
+            case -90: dashVector = new Vector2(-1, .001f); direction = -1; storedDirection = -1; break; // LEFT
+            case 135: dashVector = new Vector2(.7f, -.7f); direction = 1; storedDirection = 1; break; // DIAG RIGHT DOWN
+            case -135: dashVector = new Vector2(-.7f, -.7f); direction = -1; storedDirection = -1; break; // DIAG DOWN LEFT
+            case -45: dashVector = new Vector2(-.7f,.7f); direction = -1; storedDirection = -1; break; // DIAG LEFT UP
+            case 45: dashVector = new Vector2(.7f,.7f); ; direction = 1; storedDirection = 1; break; // DIAG RIGHT UP
+        }
+
+        //dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
     }
 
     private void OnDrawGizmos()
@@ -284,6 +310,11 @@ public class MovementInput : MonoBehaviour
         //Upper Contact Check
         Gizmos.color = CheckUpperContact() ? Color.yellow : Color.red;
         Gizmos.DrawRay(transform.position + (transform.up * .5f), Vector3.up * 1.5f);
+
+        //Extra Raycast Check
+        Gizmos.color = Color.black;
+        Gizmos.DrawRay(transform.position + (transform.up * .3f) + (transform.forward * .3f), Vector3.down * .5f);
+
 
         //Grounded Check
         Gizmos.color = isGrounded ? Color.yellow : Color.blue;
@@ -294,13 +325,53 @@ public class MovementInput : MonoBehaviour
         Gizmos.DrawRay(transform.position + (transform.up * .7f), transform.forward * .5f);
     }
 
+    //Controller Collision
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (isDashing)
         {
+
+            RaycastHit info;
+            if (Physics.Raycast(transform.position + (transform.up * .3f) + (transform.forward *.3f), Vector3.down, out info, .5f, groundLayerMask))
+            {
+                if (Vector3.Angle(info.normal, Vector3.down) != 180)
+                {
+                    Continue();
+                    return;
+                }
+            }
+
+            StartCoroutine(ImpactCooldownCoroutine());
             dashBreak = true;
+            speedBooster.StoreEnergy(false, true, true);
+            anim.SetBool("Impact",true);
+        }
+
+        IEnumerator ImpactCooldownCoroutine()
+        {
+            yield return new WaitForSeconds(.3f);
             canMove = true;
-            speedBooster.StopAll(true);
+            anim.SetBool("Impact", false);
+        }
+    }
+
+    void Continue()
+    {
+        StartCoroutine(Continuing());
+
+        speedBooster.storedEnergy = false;
+        speedBooster.activeShineSpark = false;
+        anim.SetTrigger("ContinueRun");
+        print("continue");
+        isDashing = false;
+        canMove = true;
+        speedBooster.SpeedBoost(true);
+
+        IEnumerator Continuing()
+        {
+            continuingBoost = true;
+            yield return new WaitForSeconds(.1f);
+            continuingBoost = false;
         }
     }
 }
