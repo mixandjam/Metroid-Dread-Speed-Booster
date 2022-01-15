@@ -89,7 +89,7 @@ public class MovementInput : MonoBehaviour
 
         //Animations
         float velocity = CheckForwardContact() ? 0 : characterVelocity;
-        anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * velocity) + (isBoosting ? 2 : 0), .05f, Time.deltaTime);
+        anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * velocity) + (isBoosting ? 2 : 0), .02f, Time.deltaTime);
         anim.SetBool("isGrounded", isGrounded);
         anim.SetBool("canMove", canMove);
 
@@ -152,7 +152,6 @@ public class MovementInput : MonoBehaviour
         return (Physics.Raycast(transform.position + (transform.up * .5f), Vector3.up, 1.5f,groundLayerMask));
     }
 
-
     bool CheckForwardContact()
     {
         return (Physics.Raycast(transform.position + (transform.up * .7f), transform.forward, .5f, groundLayerMask));
@@ -188,14 +187,21 @@ public class MovementInput : MonoBehaviour
         //Set current direction
         bool isMoving = (wallJumped) ? true : moveInput.x != 0;
 
+        //Direction Change
         if (isMoving && !isSliding)
-            direction = (moveInput.x > 0 ? 1 : -1);
+        {
+            if (!isGrounded && speedBooster.isActive())
+                direction = direction;
+            else
+                direction = (moveInput.x > 0 ? 1 : -1);
+        }
         float speed = movementSpeed * (isBoosting ? 2 : 1);
 
         //Disable speed if Sliding or Dashing
         if ((!isMoving && !isSliding) || chargeDash)
             speed = 0;
 
+        //To move character automatically while in speed booster & jumping
         if(!isGrounded && speedBooster.isActive())
         {
             speed = movementSpeed * (isBoosting ? 2 : 1);
@@ -223,7 +229,7 @@ public class MovementInput : MonoBehaviour
         bool wasGrounded;
         wasGrounded = isGrounded;
 
-        if (!canMove)
+        if (!canMove || speedBreak)
             return;
 
         if (!isGrounded)
@@ -294,22 +300,24 @@ public class MovementInput : MonoBehaviour
         angle = Mathf.Round(angle / 45.0f) * 45.0f;
 
         int animationImpactSide = 0;
+        float animationDashAngle = 0;
 
         direction = (moveInput.x > 0 ? 1 : -1);
 
         switch (angle)
         {
-            default: dashVector = Vector2.up; break; // UP
-            case -180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; break; // DOWN
-            case 180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; break; // DOWN
-            case 90: dashVector = new Vector2(1,.001f); direction = 1; storedDirection = 1; animationImpactSide = 1; break; //RIGHT
-            case -90: dashVector = new Vector2(-1, .001f); direction = -1; storedDirection = -1; animationImpactSide = 1; break; // LEFT
-            case 135: dashVector = new Vector2(.7f, -.7f); direction = 1; storedDirection = 1; animationImpactSide = 2; break; // DIAG RIGHT DOWN
-            case -135: dashVector = new Vector2(-.7f, -.7f); direction = -1; storedDirection = -1; animationImpactSide = 2; break; // DIAG DOWN LEFT
-            case -45: dashVector = new Vector2(-.7f,.7f); direction = -1; storedDirection = -1; break; // DIAG LEFT UP
-            case 45: dashVector = new Vector2(.7f,.7f); ; direction = 1; storedDirection = 1; break; // DIAG RIGHT UP
+            default: dashVector = Vector2.up; animationDashAngle = 1; break; // UP
+            case -180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; animationDashAngle = 2; break; // DOWN
+            case 180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; animationDashAngle = 2; break; // DOWN
+            case 90: dashVector = new Vector2(1,.001f); direction = 1; storedDirection = 1; animationImpactSide = 1; animationDashAngle = 0; break; //RIGHT
+            case -90: dashVector = new Vector2(-1, .001f); direction = -1; storedDirection = -1; animationImpactSide = 1; animationDashAngle = 0; break; // LEFT
+            case 135: dashVector = new Vector2(.7f, -.7f); direction = 1; storedDirection = 1; animationImpactSide = 2; animationDashAngle = 4; break; // DIAG RIGHT DOWN
+            case -135: dashVector = new Vector2(-.7f, -.7f); direction = -1; storedDirection = -1; animationImpactSide = 2; animationDashAngle = 4; break; // DIAG DOWN LEFT
+            case -45: dashVector = new Vector2(-.7f,.7f); direction = -1; storedDirection = -1; animationDashAngle = 3; break; // DIAG LEFT UP
+            case 45: dashVector = new Vector2(.7f,.7f); ; direction = 1; storedDirection = 1; animationDashAngle = 3; break; // DIAG RIGHT UP
         }
 
+        anim.SetFloat("DashAngle", animationDashAngle);
         anim.SetInteger("ImpactSide", animationImpactSide);
         //dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
     }

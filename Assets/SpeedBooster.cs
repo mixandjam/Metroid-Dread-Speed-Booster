@@ -251,6 +251,7 @@ public class SpeedBooster : MonoBehaviour
         movement.canMove = false;
         spChargeParticle.Play();
 
+        GetComponent<Animator>().ResetTrigger("UseShineSpark");
         GetComponent<Animator>().SetTrigger("ChargeShineSpark");
         StartCoroutine(DashCoroutine());
         IEnumerator DashCoroutine()
@@ -259,6 +260,8 @@ public class SpeedBooster : MonoBehaviour
             movement.chargeDash = true;
 
             yield return new WaitForSeconds(1f);
+
+            GetComponent<Animator>().SetTrigger("UseShineSpark");
 
             chargingShineSpark = false;
             activeShineSpark = true;
