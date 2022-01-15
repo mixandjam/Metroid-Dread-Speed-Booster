@@ -54,7 +54,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DistortionAmount: 0.1
+    - _DistortionAmount: 0.2
     - _DistortionNoiseScale: 20
     - _EffectAmount: 0
     - _HeatDistortion: 0.1

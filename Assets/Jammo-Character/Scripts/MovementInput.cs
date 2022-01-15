@@ -300,8 +300,8 @@ public class MovementInput : MonoBehaviour
         switch (angle)
         {
             default: dashVector = Vector2.up; break; // UP
-            case 180: dashVector = Vector2.up; break;
             case -180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; break; // DOWN
+            case 180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; break; // DOWN
             case 90: dashVector = new Vector2(1,.001f); direction = 1; storedDirection = 1; animationImpactSide = 1; break; //RIGHT
             case -90: dashVector = new Vector2(-1, .001f); direction = -1; storedDirection = -1; animationImpactSide = 1; break; // LEFT
             case 135: dashVector = new Vector2(.7f, -.7f); direction = 1; storedDirection = 1; animationImpactSide = 2; break; // DIAG RIGHT DOWN
