@@ -89,8 +89,9 @@ public class MovementInput : MonoBehaviour
 
         //Animations
         float velocity = CheckForwardContact() ? 0 : characterVelocity;
-        anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * velocity) + (isBoosting ? 1 : 0), .05f, Time.deltaTime);
+        anim.SetFloat("InputMagnitude", Mathf.Abs(moveInput.normalized.x * velocity) + (isBoosting ? 2 : 0), .05f, Time.deltaTime);
         anim.SetBool("isGrounded", isGrounded);
+        anim.SetBool("canMove", canMove);
 
         if (chargeDash)
         {
@@ -209,7 +210,7 @@ public class MovementInput : MonoBehaviour
 
 
         //Vertical
-        verticalVel = isGrounded ? (gravity*10) * Time.deltaTime : verticalVel + gravity * Time.deltaTime;
+        verticalVel = isGrounded ? (gravity*20) * Time.deltaTime : verticalVel + gravity * Time.deltaTime;
 
         controller.Move(Vector3.up * verticalVel * Time.deltaTime);
 
@@ -219,6 +220,9 @@ public class MovementInput : MonoBehaviour
     }
     void Jump()
     {
+        bool wasGrounded;
+        wasGrounded = isGrounded;
+
         if (!canMove)
             return;
 
@@ -241,7 +245,7 @@ public class MovementInput : MonoBehaviour
         {
             tryingJump = true;
 
-            if (CheckForwardContact() && characterVelocity != 0)
+            if (CheckForwardContact() && characterVelocity != 0 && !wasGrounded)
             {
                 wallJumped = true;
                 direction *= -1;
@@ -286,22 +290,27 @@ public class MovementInput : MonoBehaviour
     public void SetDashVector()
     {
         //InputDirection - Vector2 which you get from your typical joystick
-
         float angle = Mathf.Atan2(moveInput.x, moveInput.y) * Mathf.Rad2Deg;
         angle = Mathf.Round(angle / 45.0f) * 45.0f;
+
+        int animationImpactSide = 0;
+
+        direction = (moveInput.x > 0 ? 1 : -1);
 
         switch (angle)
         {
             default: dashVector = Vector2.up; break; // UP
-            case -180: dashVector = -Vector2.up; break; // DOWN
-            case 90: dashVector = new Vector2(1,.001f); direction = 1; storedDirection = 1; break; //RIGHT
-            case -90: dashVector = new Vector2(-1, .001f); direction = -1; storedDirection = -1; break; // LEFT
-            case 135: dashVector = new Vector2(.7f, -.7f); direction = 1; storedDirection = 1; break; // DIAG RIGHT DOWN
-            case -135: dashVector = new Vector2(-.7f, -.7f); direction = -1; storedDirection = -1; break; // DIAG DOWN LEFT
+            case 180: dashVector = Vector2.up; break;
+            case -180: dashVector = -Vector2.up;  storedDirection = direction ; animationImpactSide = 2; break; // DOWN
+            case 90: dashVector = new Vector2(1,.001f); direction = 1; storedDirection = 1; animationImpactSide = 1; break; //RIGHT
+            case -90: dashVector = new Vector2(-1, .001f); direction = -1; storedDirection = -1; animationImpactSide = 1; break; // LEFT
+            case 135: dashVector = new Vector2(.7f, -.7f); direction = 1; storedDirection = 1; animationImpactSide = 2; break; // DIAG RIGHT DOWN
+            case -135: dashVector = new Vector2(-.7f, -.7f); direction = -1; storedDirection = -1; animationImpactSide = 2; break; // DIAG DOWN LEFT
             case -45: dashVector = new Vector2(-.7f,.7f); direction = -1; storedDirection = -1; break; // DIAG LEFT UP
             case 45: dashVector = new Vector2(.7f,.7f); ; direction = 1; storedDirection = 1; break; // DIAG RIGHT UP
         }
 
+        anim.SetInteger("ImpactSide", animationImpactSide);
         //dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
     }
 
@@ -325,18 +334,20 @@ public class MovementInput : MonoBehaviour
         Gizmos.DrawRay(transform.position + (transform.up * .7f), transform.forward * .5f);
     }
 
-    //Controller Collision
+    //Character Controller collision
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
+
         if (isDashing)
         {
-
             RaycastHit info;
+
+            //Raycast to check the ground collision normal angle, if that angle is different than 180 the speedboster returns
             if (Physics.Raycast(transform.position + (transform.up * .3f) + (transform.forward *.3f), Vector3.down, out info, .5f, groundLayerMask))
             {
                 if (Vector3.Angle(info.normal, Vector3.down) != 180)
                 {
-                    Continue();
+                    ContinueRunFromShinespark();
                     return;
                 }
             }
@@ -349,15 +360,17 @@ public class MovementInput : MonoBehaviour
 
         IEnumerator ImpactCooldownCoroutine()
         {
-            yield return new WaitForSeconds(.3f);
+            //reset gravity
+            verticalVel = gravity * Time.deltaTime;
+            yield return new WaitForSeconds(1f);
             canMove = true;
             anim.SetBool("Impact", false);
         }
     }
 
-    void Continue()
+    void ContinueRunFromShinespark()
     {
-        StartCoroutine(Continuing());
+        StartCoroutine(ContinueRunCoroutine());
 
         speedBooster.storedEnergy = false;
         speedBooster.activeShineSpark = false;
@@ -367,7 +380,7 @@ public class MovementInput : MonoBehaviour
         canMove = true;
         speedBooster.SpeedBoost(true);
 
-        IEnumerator Continuing()
+        IEnumerator ContinueRunCoroutine()
         {
             continuingBoost = true;
             yield return new WaitForSeconds(.1f);
