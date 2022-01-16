@@ -10,6 +10,8 @@ public class SpeedBooster : MonoBehaviour
     //Components
     private MovementInput movement;
     private Coroutine speedCharge;
+
+    //Coroutines
     private Coroutine rumbleCoroutine;
     private Coroutine storedEnergyCoroutine;
 
@@ -29,13 +31,23 @@ public class SpeedBooster : MonoBehaviour
     private Color chargeColor, activeColor;
 
     [Header("Effects")]
-    [SerializeField]
-    public ParticleSystem chestParticle;
-    public ParticleSystem feetParticle;
+
+    [Header("Run")]
+    [SerializeField] private ParticleSystem circleChargeParticle;
+    [SerializeField] private ParticleSystem chestParticle;
+    [SerializeField] private ParticleSystem feetParticle;
+    [SerializeField] private ParticleSystem flashParticle;
+    [SerializeField] private GameObject distortion;
+
+    [Header("Store")]
+    public ParticleSystem storeParticle;
     public ParticleSystem spChargeParticle;
-    public GameObject distortion;
+
+    [Header("Dash")]
+    public ParticleSystem impactPartile;
 
     [Header("Settings")]
+    [SerializeField] private float chargeTime = 1.5f;
     public int storedEnergyCooldown;
 
     // Start is called before the first frame update
@@ -83,19 +95,25 @@ public class SpeedBooster : MonoBehaviour
         if (state)
         {
             speedCharge = StartCoroutine(ChargeCoroutine());
+
+            //effects
             MaterialChange(0.13f, 2.1f, 1,0, chargeColor);
             chestParticle.Play();
+            circleChargeParticle.Play();
         }
         else
         {
             StopCoroutine(speedCharge);
+
+            //effects
             MaterialChange(0, 1.25f, 0,0, activeColor);
             chestParticle.Stop();
+            circleChargeParticle.Stop();
         }
 
         IEnumerator ChargeCoroutine()
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(chargeTime);
             SpeedBoost(true);
         }
     }
@@ -109,15 +127,17 @@ public class SpeedBooster : MonoBehaviour
 
         if (!state)
         {
+            feetParticle.Stop();
             return;
         }
 
+        //efects
         feetParticle.Play();
-
+        flashParticle.Play();
         MaterialChange(0.16f, 2.1f, 1,1, chargeColor);
 
-        GetComponent<CinemachineImpulseSource>().GenerateImpulse();
-
+        //shakes
+        flashParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
         Rumble(.2f, .25f, .75f);
     }
 
@@ -151,15 +171,18 @@ public class SpeedBooster : MonoBehaviour
 
             if (impact)
             {
-                GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+                //effects
+                DOVirtual.Float(.2f, 0, .1f, BlinkMaterial);
                 GetComponent<CinemachineImpulseSource>().GenerateImpulse();
                 Rumble(.2f, .25f, .75f);
             }
         }
 
-        if(!chargingSpeedBooster)
+        if (!chargingSpeedBooster)
+        {
             chestParticle.Stop();
             feetParticle.Stop();
+        }
     }
 
     void MaterialChange(float fresnelAmount, float fresnelEdge, int blinkFresnel,int extraBlink, Color fresnelColor)
@@ -226,10 +249,15 @@ public class SpeedBooster : MonoBehaviour
             StartCoroutine(CrouchCoroutine());
             storedEnergyCoroutine = StartCoroutine(StoredEnergyCooldown());
 
+            //effects
+            storeParticle.Play();
+            storeParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+
             IEnumerator CrouchCoroutine()
             {
                 movement.canMove = false;
-                yield return new WaitForSeconds(.5f);
+
+                yield return new WaitForSeconds(.8f);
                 movement.canMove = true;
             }
 
@@ -246,14 +274,23 @@ public class SpeedBooster : MonoBehaviour
         if (!storedEnergy || !movement.canMove)
             return;
 
-        StopCoroutine(storedEnergyCoroutine);
-
         movement.canMove = false;
-        spChargeParticle.Play();
 
+        StopCoroutine(storedEnergyCoroutine);
+        StartCoroutine(DashCoroutine());
+
+        //animation
         GetComponent<Animator>().ResetTrigger("UseShineSpark");
         GetComponent<Animator>().SetTrigger("ChargeShineSpark");
-        StartCoroutine(DashCoroutine());
+
+        //effects
+        spChargeParticle.Play();
+        spChargeParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+        DOVirtual.Float(0, .08f, 1, BlinkMaterial);
+
+        Rumble(1, .10f, .1f);
+
+
         IEnumerator DashCoroutine()
         {
             chargingShineSpark = true;
@@ -283,6 +320,10 @@ public class SpeedBooster : MonoBehaviour
             movement.dashBreak = false;
             movement.isDashing = false;
             activeShineSpark = false;
+
+            //effects
+            impactPartile.Play();
+            storeParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
         }
 
     }
@@ -301,6 +342,15 @@ public class SpeedBooster : MonoBehaviour
         {
             Gamepad.current.SetMotorSpeeds(lowFrequency, highFrequency);
             yield return new WaitForSeconds(duration);
+            Gamepad.current.SetMotorSpeeds(0, 0);
+        }
+    }
+
+    void StopRumble()
+    {
+        if (rumbleCoroutine != null)
+        {
+            StopCoroutine(rumbleCoroutine);
             Gamepad.current.SetMotorSpeeds(0, 0);
         }
     }
