@@ -39,15 +39,18 @@ Material:
     m_Floats:
     - _DistortionAmount: 0
     - _DistortionNoiseScale: 40.1
-    - _EffectAmount: 1
+    - _EffectAmount: 0
+    - _GradientAmount: 0.452
+    - _NoiseScale: 20
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SmokeAmount: 0.481
+    - _SmokeAmount: 0.245
     - _SmokeNoiseScale: 34.99
     m_Colors:
-    - _Color: {r: 609.6884, g: 0, b: 121.939896, a: 1}
+    - _Color: {r: 813.9819, g: 126.704735, b: 267.03873, a: 1}
     - _DistortionSpeed: {r: 0, g: 0.4, b: 0, a: 0}
     - _SmokeSpeed: {r: 0, g: 3, b: 0, a: 0}
+    - _Speed: {r: 0, g: 0.4, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &1180110185782017540
 MonoBehaviour:

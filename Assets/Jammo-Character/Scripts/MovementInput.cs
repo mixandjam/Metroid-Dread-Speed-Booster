@@ -39,6 +39,7 @@ public class MovementInput : MonoBehaviour
     [SerializeField] private bool speedBreak = false;
     [SerializeField] private Ease breakEase;
     private float breakDirection;
+    [SerializeField] ParticleSystem breakParticle;
 
     [Header("Input")]
     public Vector2 moveInput, dashVector;
@@ -115,9 +116,13 @@ public class MovementInput : MonoBehaviour
                     breakSpeed = movementSpeed * 2;
                     breakDirection = storedDirection;
                     speedBreak = true;
+                    DOVirtual.Float(movementSpeed * 2, 0, .5f, SetBreakSpeed).SetEase(breakEase);
+
+                    //effects
+                    breakParticle.Play();
+
                     if (isGrounded)
                         anim.SetTrigger("BreakSlide");
-                    DOVirtual.Float(movementSpeed * 2, 0, .5f, SetBreakSpeed).SetEase(breakEase);
 
                     StartCoroutine(BreakCoroutine());
                     IEnumerator BreakCoroutine()
@@ -317,6 +322,7 @@ public class MovementInput : MonoBehaviour
             case 45: dashVector = new Vector2(.7f,.7f); ; direction = 1; storedDirection = 1; animationDashAngle = 3; break; // DIAG RIGHT UP
         }
 
+        speedBooster.SetShineSparkAngle(Mathf.Abs(angle));
         anim.SetFloat("DashAngle", animationDashAngle);
         anim.SetInteger("ImpactSide", animationImpactSide);
         //dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
@@ -356,6 +362,7 @@ public class MovementInput : MonoBehaviour
                 if (Vector3.Angle(info.normal, Vector3.down) != 180)
                 {
                     ContinueRunFromShinespark();
+                    speedBooster.StopShineSparkBeam();
                     return;
                 }
             }

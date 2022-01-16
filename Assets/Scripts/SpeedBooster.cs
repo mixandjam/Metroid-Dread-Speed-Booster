@@ -10,6 +10,7 @@ public class SpeedBooster : MonoBehaviour
     //Components
     private MovementInput movement;
     private Coroutine speedCharge;
+    private Animator anim;
 
     //Coroutines
     private Coroutine rumbleCoroutine;
@@ -28,7 +29,7 @@ public class SpeedBooster : MonoBehaviour
 
     [ColorUsage(true,true)]
     [SerializeField]
-    private Color chargeColor, activeColor;
+    private Color runColor, sparkColor;
 
     [Header("Effects")]
 
@@ -38,6 +39,7 @@ public class SpeedBooster : MonoBehaviour
     [SerializeField] private ParticleSystem feetParticle;
     [SerializeField] private ParticleSystem flashParticle;
     [SerializeField] private GameObject distortion;
+    [SerializeField] private GameObject shineSparkMesh;
 
     [Header("Store")]
     public ParticleSystem storeParticle;
@@ -45,21 +47,37 @@ public class SpeedBooster : MonoBehaviour
 
     [Header("Dash")]
     public ParticleSystem impactPartile;
+    public ParticleSystem trailParticle;
+    public Transform trailParent;
 
     [Header("Settings")]
     [SerializeField] private float chargeTime = 1.5f;
     public int storedEnergyCooldown;
 
+    //Impulse Sources
+    private CinemachineImpulseSource characterImpulseSource;
+    private CinemachineImpulseSource flashImpulseSource;
+    private CinemachineImpulseSource storeImpulseSource;
+    private CinemachineImpulseSource chargeImpulseSource;
+    private CinemachineImpulseSource trailImpulseSource;
+
     // Start is called before the first frame update
     void Start()
     {
         movement = GetComponent<MovementInput>();
+        anim = GetComponent<Animator>();
 
         rendererMaterials = new Material[characterRenderers.Length];
         for (int i = 0; i < characterRenderers.Length; i++)
         {
             rendererMaterials[i] = characterRenderers[i].material;
         }
+
+        characterImpulseSource = GetComponent<CinemachineImpulseSource>();
+        flashImpulseSource = flashParticle.GetComponent<CinemachineImpulseSource>();
+        storeImpulseSource = storeParticle.GetComponent<CinemachineImpulseSource>();
+        chargeImpulseSource = spChargeParticle.GetComponent<CinemachineImpulseSource>();
+        trailImpulseSource = trailParticle.GetComponent<CinemachineImpulseSource>();
 
     }
 
@@ -77,7 +95,7 @@ public class SpeedBooster : MonoBehaviour
 
             if (shake && !shakeTrigger)
             {
-                GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+                GenerateCameraShake(characterImpulseSource);
                 Rumble(.2f, .25f, .75f);
             }
         }
@@ -97,7 +115,7 @@ public class SpeedBooster : MonoBehaviour
             speedCharge = StartCoroutine(ChargeCoroutine());
 
             //effects
-            MaterialChange(0.13f, 2.1f, 1,0, chargeColor);
+            MaterialChange(0.13f, 2.1f, 1,0, runColor);
             chestParticle.Play();
             circleChargeParticle.Play();
         }
@@ -106,7 +124,7 @@ public class SpeedBooster : MonoBehaviour
             StopCoroutine(speedCharge);
 
             //effects
-            MaterialChange(0, 1.25f, 0,0, activeColor);
+            MaterialChange(0, 1.25f, 0,0, sparkColor);
             chestParticle.Stop();
             circleChargeParticle.Stop();
         }
@@ -134,16 +152,21 @@ public class SpeedBooster : MonoBehaviour
         //efects
         feetParticle.Play();
         flashParticle.Play();
-        MaterialChange(0.16f, 2.1f, 1,1, chargeColor);
+        MaterialChange(0.16f, 2.1f, 1,1, runColor);
 
         //shakes
-        flashParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+        GenerateCameraShake(flashImpulseSource);
         Rumble(.2f, .25f, .75f);
     }
 
     void SetDistortionEffect(float amount)
     {
         distortion.GetComponent<Renderer>().material.SetFloat("_EffectAmount", amount);
+    }
+
+    void SetShineSparkEffect(float amount)
+    {
+        shineSparkMesh.GetComponent<Renderer>().material.SetFloat("_EffectAmount", amount);
     }
 
     float GetDistortionEffectAmount()
@@ -159,8 +182,8 @@ public class SpeedBooster : MonoBehaviour
         if (state)
         {
             DOVirtual.Float(0, 1, .1f, BlinkMaterial).OnComplete(()=> DOVirtual.Float(1, 0, .3f, BlinkMaterial));
-            MaterialChange(0.125f, 1.25f, 0,0, activeColor);
-            GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+            MaterialChange(0.125f, 1.25f, 0,0, sparkColor);
+            GenerateCameraShake(characterImpulseSource);
             Rumble(.2f, .25f, .75f);
         }
         else
@@ -173,7 +196,7 @@ public class SpeedBooster : MonoBehaviour
             {
                 //effects
                 DOVirtual.Float(.2f, 0, .1f, BlinkMaterial);
-                GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+                GenerateCameraShake(characterImpulseSource);
                 Rumble(.2f, .25f, .75f);
             }
         }
@@ -244,14 +267,14 @@ public class SpeedBooster : MonoBehaviour
         {
             StoreEnergy(true, false, false);
             SpeedBoost(false);
-            GetComponent<Animator>().SetTrigger("StoreEnergy");
+            anim.SetTrigger("StoreEnergy");
 
             StartCoroutine(CrouchCoroutine());
             storedEnergyCoroutine = StartCoroutine(StoredEnergyCooldown());
 
             //effects
             storeParticle.Play();
-            storeParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+            GenerateCameraShake(storeImpulseSource);
 
             IEnumerator CrouchCoroutine()
             {
@@ -280,16 +303,15 @@ public class SpeedBooster : MonoBehaviour
         StartCoroutine(DashCoroutine());
 
         //animation
-        GetComponent<Animator>().ResetTrigger("UseShineSpark");
-        GetComponent<Animator>().SetTrigger("ChargeShineSpark");
+        anim.ResetTrigger("UseShineSpark");
+        anim.SetTrigger("ChargeShineSpark");
 
         //effects
         spChargeParticle.Play();
-        spChargeParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
-        DOVirtual.Float(0, .08f, 1, BlinkMaterial);
+        GenerateCameraShake(chargeImpulseSource);
+        DOVirtual.Float(0, .08f, .8f, BlinkMaterial);
 
         Rumble(1, .10f, .1f);
-
 
         IEnumerator DashCoroutine()
         {
@@ -298,7 +320,7 @@ public class SpeedBooster : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
 
-            GetComponent<Animator>().SetTrigger("UseShineSpark");
+            anim.SetTrigger("UseShineSpark");
 
             chargingShineSpark = false;
             activeShineSpark = true;
@@ -307,14 +329,15 @@ public class SpeedBooster : MonoBehaviour
             movement.chargeDash = false;
             movement.isDashing = true;
 
+            //effects
             spChargeParticle.Stop();
+            trailParticle.Play();
+            trailImpulseSource.m_ImpulseDefinition.m_AmplitudeGain = .5f;
+            GenerateCameraShake(trailImpulseSource);
+            DOVirtual.Float(0, 1, .1f, SetShineSparkEffect);
+            StopRumble();
+            Rumble(5, .01f, .05f);
 
-            float t = 0;
-            while (t < .2f)
-            {
-                t += Time.deltaTime;
-                yield return new WaitForEndOfFrame();
-            }
             yield return new WaitUntil(() => movement.dashBreak);
 
             movement.dashBreak = false;
@@ -322,8 +345,13 @@ public class SpeedBooster : MonoBehaviour
             activeShineSpark = false;
 
             //effects
+            trailParticle.Stop();
+            trailImpulseSource.m_ImpulseDefinition.m_AmplitudeGain = 0;
+            DOVirtual.Float(1, 0, .1f, SetShineSparkEffect);
             impactPartile.Play();
-            storeParticle.GetComponent<CinemachineImpulseSource>().GenerateImpulse();
+            GenerateCameraShake(flashImpulseSource);
+            StopRumble();
+            Rumble(.5f, .3f, .5f);
         }
 
     }
@@ -357,5 +385,27 @@ public class SpeedBooster : MonoBehaviour
 
     #endregion
 
+    public void StopShineSparkBeam()
+    {
+        StopRumble();
+        trailParticle.Stop();
+        trailImpulseSource.m_ImpulseDefinition.m_AmplitudeGain = 0;
+        DOVirtual.Float(1, 0, .1f, SetShineSparkEffect);
+        BlinkMaterial(0);
+    }
 
+    public void SetShineSparkAngle(float angle)
+    {
+        trailParent.localEulerAngles = new Vector3(angle, 0, 0);
+    }
+
+    private void OnApplicationQuit()
+    {
+        StopRumble();
+    }
+
+    void GenerateCameraShake(CinemachineImpulseSource source)
+    {
+        source.GenerateImpulse();
+    }
 }
