@@ -31,9 +31,7 @@ public class SpeedBooster : MonoBehaviour
     [SerializeField]
     private Color runColor, sparkColor;
 
-    [Header("Effects")]
-
-    [Header("Run")]
+    [Header("Effects - Run")]
     [SerializeField] private ParticleSystem circleChargeParticle;
     [SerializeField] private ParticleSystem chestParticle;
     [SerializeField] private ParticleSystem feetParticle;
@@ -41,11 +39,11 @@ public class SpeedBooster : MonoBehaviour
     [SerializeField] private GameObject distortion;
     [SerializeField] private GameObject shineSparkMesh;
 
-    [Header("Store")]
+    [Header("Effects - Store")]
     public ParticleSystem storeParticle;
     public ParticleSystem spChargeParticle;
 
-    [Header("Dash")]
+    [Header("Effects - Dash")]
     public ParticleSystem impactPartile;
     public ParticleSystem trailParticle;
     public Transform trailParent;
@@ -79,31 +77,6 @@ public class SpeedBooster : MonoBehaviour
         chargeImpulseSource = spChargeParticle.GetComponent<CinemachineImpulseSource>();
         trailImpulseSource = trailParticle.GetComponent<CinemachineImpulseSource>();
 
-    }
-
-
-    public void StopAll(bool shake)
-    {
-        if ((chargingSpeedBooster || activeSpeedBooster) && !storedEnergy)
-        {
-            bool shakeTrigger = chargingSpeedBooster;
-
-            if (!chargingSpeedBooster)
-                SpeedBoost(false);
-            ChargeSpeedBoost(false);
-
-
-            if (shake && !shakeTrigger)
-            {
-                GenerateCameraShake(characterImpulseSource);
-                Rumble(.2f, .25f, .75f);
-            }
-        }
-    }
-
-    public void StopSpeedCharge()
-    {
-        ChargeSpeedBoost(false);
     }
 
     void ChargeSpeedBoost(bool state)
@@ -150,6 +123,7 @@ public class SpeedBooster : MonoBehaviour
         }
 
         //efects
+        chestParticle.Play();
         feetParticle.Play();
         flashParticle.Play();
         MaterialChange(0.16f, 2.1f, 1,1, runColor);
@@ -242,6 +216,54 @@ public class SpeedBooster : MonoBehaviour
     public bool isEnergyStored()
     {
         return storedEnergy;
+    }
+
+    public void StopShineSparkBeam()
+    {
+        StopRumble();
+        trailParticle.Stop();
+        trailImpulseSource.m_ImpulseDefinition.m_AmplitudeGain = 0;
+        DOVirtual.Float(1, 0, .1f, SetShineSparkEffect);
+        BlinkMaterial(0);
+    }
+
+    public void SetShineSparkAngle(float angle)
+    {
+        trailParent.localEulerAngles = new Vector3(angle, 0, 0);
+    }
+
+    private void OnApplicationQuit()
+    {
+        StopRumble();
+    }
+
+    void GenerateCameraShake(CinemachineImpulseSource source)
+    {
+        source.GenerateImpulse();
+    }
+
+    public void StopAll(bool shake)
+    {
+        if ((chargingSpeedBooster || activeSpeedBooster) && !storedEnergy)
+        {
+            bool shakeTrigger = chargingSpeedBooster;
+
+            if (!chargingSpeedBooster)
+                SpeedBoost(false);
+            ChargeSpeedBoost(false);
+
+
+            if (shake && !shakeTrigger)
+            {
+                GenerateCameraShake(characterImpulseSource);
+                Rumble(.2f, .25f, .75f);
+            }
+        }
+    }
+
+    public void StopSpeedCharge()
+    {
+        ChargeSpeedBoost(false);
     }
 
     //All Inputs
@@ -384,28 +406,4 @@ public class SpeedBooster : MonoBehaviour
     }
 
     #endregion
-
-    public void StopShineSparkBeam()
-    {
-        StopRumble();
-        trailParticle.Stop();
-        trailImpulseSource.m_ImpulseDefinition.m_AmplitudeGain = 0;
-        DOVirtual.Float(1, 0, .1f, SetShineSparkEffect);
-        BlinkMaterial(0);
-    }
-
-    public void SetShineSparkAngle(float angle)
-    {
-        trailParent.localEulerAngles = new Vector3(angle, 0, 0);
-    }
-
-    private void OnApplicationQuit()
-    {
-        StopRumble();
-    }
-
-    void GenerateCameraShake(CinemachineImpulseSource source)
-    {
-        source.GenerateImpulse();
-    }
 }

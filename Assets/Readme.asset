@@ -12,39 +12,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf7219bab7fe46a1ad266029b2fee19, type: 3}
   m_Name: Readme
   m_EditorClassIdentifier: 
-  icon: {fileID: 2800000, guid: 7801804018a7dcf42abb827444e18660, type: 3}
-  title: Universal Render Pipeline Template
+  icon: {fileID: 2800000, guid: e9fb1ae8b918e3f41a85bcc0a3775c11, type: 3}
+  title: Speed Boost | Mix and Jam
   sections:
-  - heading: Universal Render Pipeline
-    text: 'The Universal Project Template configures Project settings for Projects where performance, wide platform support, and ease of customizing graphics are the primary considerations.'
-    linkText: 
-    url: 
-  - heading:
-    text: 'This Template uses the Universal Render Pipeline (URP) and Shader Graph.'
-    linkText: 
-    url: 
-  - heading:
-    text: 'URP is prebuilt Scriptable Render Pipeline that is quick and easy to customize, and lets you create optimized graphics across a wide range of platforms. URP also includes an optimized 2D renderer complete with 2D lights and pixel perfect rendering, and an integrated post-processing solution.'
-    linkText: 
-    url: 
-  - heading:
-    text: 'Shader Graph is a tool that allows you to create shaders using a visual node editor instead of writing code.'
+  - heading: Description
+    text: 
     linkText: 
     url: 
   - heading: 
-    text: 'This template contains a sample Scene that contains examples of how to configure lighting settings, Materials, Shaders, and post-processing effects in URP, several preconfigured Universal Render Pipeline Assets that let you quickly swap between graphics quality levels, and Presets that have been optimized for use with URP.'
-    linkText:
-    url:
+    text: This project is a take on the Freeflow Combat system from the Batman Arkham
+      series of games! Includes implementations of directional combat, counter-attack
+      system and basic AI!
+    linkText: 
+    url: 
   - heading: 
-    text: 'This template contains a sample Scene that contains examples of how to configure lighting settings, Materials, Shaders, and post-processing effects in URP, several preconfigured Universal Render Pipeline Assets that let you quickly swap between graphics quality levels, and Presets that have been optimized for use with URP.'
-    linkText:
-    url:
+    text: 
+    linkText: Watch the full overview video here
+    url: https://youtu.be/GFOpKcpKGKQ
+  - heading: Controls
+    text: 
+    linkText: 
+    url: 
   - heading: 
-    text: 'To read more about URP and its built-in features, see the '
-    linkText: URP documentation.
-    url: https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest/index.html
+    text: Move - WASD and Arrowkeys / Left Stick
+    linkText: 
+    url: 
   - heading: 
-    text: 'For more information about Shader Graph, see the '
-    linkText: Shader Graph documentation
-    url: https://docs.unity3d.com/Packages/com.unity.shadergraph@latest
+    text: Jump - Space / South Button
+    linkText: 
+    url: 
+  - heading: 
+    text: Activate Speed Boost - Shift / Left Stick Button
+    linkText: 
+    url: 
+  - heading: 
+    text: Use Shine Spark - Z / West Button
+    linkText: 
+    url: 
+  - heading: Credits
+    text: 
+    linkText: 
+    url: 
+  - heading: 
+    text: 
+    linkText: "Andr\xE9 Cardoso (Mix and Jam)"
+    url: https://twitter.com/andre_mc
   loadedLayout: 1
