@@ -402,4 +402,9 @@ public class MovementInput : MonoBehaviour
             continuingBoost = false;
         }
     }
+
+    public float  GetDirection() 
+    {
+        return direction;
+    }
 }

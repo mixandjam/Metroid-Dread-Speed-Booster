@@ -150,7 +150,7 @@ BlendTree:
     m_Motion: {fileID: 7400000, guid: b13573481f33f174c91372eee430f19d, type: 2}
     m_Threshold: 2
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1.35
+    m_TimeScale: 1.4
     m_CycleOffset: 0
     m_DirectBlendParameter: InputMagnitude
     m_Mirror: 0

@@ -54,16 +54,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DistortionAmount: 0.13
+    - _DistortionAmount: 0.2
     - _DistortionNoiseScale: 20
     - _EffectAmount: 0
     - _HeatDistortion: 0.1
     - _NoiseScale: 20
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SmokeAmount: 0.35
+    - _SmokeAmount: 0.527
     - _SmokeNoiseScale: 15
     m_Colors:
     - _DistortionSpeed: {r: 0, g: 5, b: 0, a: 0}
-    - _SmokeSpeed: {r: 0, g: 2, b: 0, a: 0}
+    - _SmokeSpeed: {r: 0, g: 6, b: 0, a: 0}
   m_BuildTextureStacks: []

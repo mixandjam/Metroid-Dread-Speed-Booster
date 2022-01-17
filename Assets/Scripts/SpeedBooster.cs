@@ -37,6 +37,7 @@ public class SpeedBooster : MonoBehaviour
     [SerializeField] private ParticleSystem feetParticle;
     [SerializeField] private ParticleSystem flashParticle;
     [SerializeField] private GameObject distortion;
+    [SerializeField] private GameObject soundBarrier;
     [SerializeField] private GameObject shineSparkMesh;
 
     [Header("Effects - Store")]
@@ -77,6 +78,11 @@ public class SpeedBooster : MonoBehaviour
         chargeImpulseSource = spChargeParticle.GetComponent<CinemachineImpulseSource>();
         trailImpulseSource = trailParticle.GetComponent<CinemachineImpulseSource>();
 
+    }
+
+    private void Update()
+    {
+        distortion.transform.localEulerAngles = new Vector3(distortion.transform.localEulerAngles.x, distortion.transform.localEulerAngles.y, movement.GetDirection() == 1 ? 0 : 180);
     }
 
     void ChargeSpeedBoost(bool state)
@@ -127,6 +133,7 @@ public class SpeedBooster : MonoBehaviour
         feetParticle.Play();
         flashParticle.Play();
         MaterialChange(0.16f, 2.1f, 1,1, runColor);
+        DOVirtual.Float(1, 0, .1f, SetSoundBarrierEffect).SetDelay(.2f);
 
         //shakes
         GenerateCameraShake(flashImpulseSource);
@@ -136,6 +143,12 @@ public class SpeedBooster : MonoBehaviour
     void SetDistortionEffect(float amount)
     {
         distortion.GetComponent<Renderer>().material.SetFloat("_EffectAmount", amount);
+    }
+
+    void SetSoundBarrierEffect(float amount)
+    {
+
+        soundBarrier.GetComponent<ParticleSystemRenderer>().material.SetFloat("_DistortionAmount", amount);
     }
 
     void SetShineSparkEffect(float amount)
@@ -406,4 +419,15 @@ public class SpeedBooster : MonoBehaviour
     }
 
     #endregion
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Block"))
+        {
+            if(activeSpeedBooster || activeShineSpark)
+            {
+                other.GetComponent<BlockScript>().Hit();
+            }
+        }
+    }
 }
