@@ -157,7 +157,7 @@ MonoBehaviour:
     m_ImpulseType: 3
     m_DissipationRate: 0.25
     m_RawSignal: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-    m_AmplitudeGain: 0
+    m_AmplitudeGain: 1
     m_FrequencyGain: 8
     m_RepeatMode: 0
     m_Randomize: 1

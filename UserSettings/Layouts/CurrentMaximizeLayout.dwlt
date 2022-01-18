@@ -25,7 +25,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 217623
+  controlID: 217798
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -64,7 +64,7 @@ MonoBehaviour:
   m_TextureFilterMode: 0
   m_TextureHideFlags: 61
   m_RenderIMGUI: 1
-  m_EnterPlayModeBehavior: 1
+  m_EnterPlayModeBehavior: 0
   m_UseMipMap: 0
   m_VSyncEnabled: 0
   m_Gizmos: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 217601
+  controlID: 217799
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -431,9 +431,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -6.691095, y: -4.682708, z: 56.307602}
+    m_Target: {x: 14.472567, y: 3.2512126, z: 69.19852}
     speed: 2
-    m_Value: {x: -6.691095, y: -4.682708, z: 56.307602}
+    m_Value: {x: 14.472567, y: 3.2512126, z: 69.19852}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -480,13 +480,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.049681656, y: -0.06886786, z: 0.003349624, w: 0.9964736}
+    m_Target: {x: -0.0071389196, y: -0.10779442, z: -0.0008617298, w: 0.9942404}
     speed: 2
-    m_Value: {x: 0.049677137, y: -0.0688616, z: 0.0033493196, w: 0.996383}
+    m_Value: {x: -0.0071382583, y: -0.107784435, z: -0.00086165, w: 0.9941483}
   m_Size:
-    m_Target: 30.140135
+    m_Target: 41.832275
     speed: 2
-    m_Value: 30.140135
+    m_Value: 41.832275
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -7035,8 +7035,8 @@ MonoBehaviour:
     y: 352
     width: 1425
     height: 995
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 2}
   m_Panes:
   - {fileID: 11}
@@ -7184,7 +7184,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 217534
+  controlID: 217732
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -7241,10 +7241,10 @@ MonoBehaviour:
     m_SaveData: []
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: 5c23e6ff689ae6ffa20ce7ff1058f6ffa094fbff66f4ffff02fbffff
+      scrollPos: {x: 0, y: 153}
+      m_SelectedIDs: d2240a00
+      m_LastClickedID: 664786
+      m_ExpandedIDs: dae5d0ffb4e6d0ffb2f0d0ffccfad0ffaafbd0ff0e00d1ff5c23e6ff689ae6ffa20ce7ff1058f6ffa094fbff66f4ffff02fbffff16260a00
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -7335,21 +7335,21 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/Materials
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets
+  - Assets/Materials
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\andre.cardoso\Documents\GitHub\Metroid-Dread-Speed-Booster
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 846e0000
-    m_LastClickedID: 28292
+    m_SelectedIDs: 946e0000
+    m_LastClickedID: 28308
     m_ExpandedIDs: 00000000846e000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -7403,9 +7403,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: a20ce7ff
-    m_LastClickedInstanceID: -1635166
-    m_HadKeyboardFocusLastEvent: 0
+    m_SelectedInstanceIDs: d2240a00
+    m_LastClickedInstanceID: 664786
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -7494,7 +7494,7 @@ MonoBehaviour:
     m_CachedPref: 160
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: -1635166
+  m_LastInspectedObjectInstanceID: -1
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0

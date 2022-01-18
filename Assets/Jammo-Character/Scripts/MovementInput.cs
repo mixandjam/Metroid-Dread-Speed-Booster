@@ -328,6 +328,37 @@ public class MovementInput : MonoBehaviour
         //dashVector = moveInput == Vector2.zero ? Vector2.up : moveInput.normalized;
     }
 
+
+    /// <summary>
+    /// FOR VIDEO
+    /// </summary>
+
+
+
+    public void DashVector()
+    {
+        float angle = Mathf.Atan2(moveInput.x, moveInput.y) * Mathf.Rad2Deg;
+        angle = Mathf.Round(angle / 45.0f) * 45.0f;
+
+        direction = (moveInput.x > 0 ? 1 : -1);
+
+        switch (angle)
+        {
+            default: dashVector = Vector2.up; break; // UP
+            case -180: dashVector = -Vector2.up; break; // DOWN
+            case 180: dashVector = -Vector2.up; break; // DOWN
+            case 90: dashVector = Vector2.right;  break; //RIGHT
+            case -90: dashVector = -Vector2.right; break; // LEFT
+            case 135: dashVector = new Vector2(.7f, -.7f);  break; // DIAG RIGHT DOWN
+            case -135: dashVector = new Vector2(-.7f, -.7f); break; // DIAG DOWN LEFT
+            case -45: dashVector = new Vector2(-.7f, .7f); break; // DIAG LEFT UP
+            case 45: dashVector = new Vector2(.7f, .7f); break; // DIAG RIGHT UP
+        }
+    }
+
+
+
+
     private void OnDrawGizmos()
     {
         //Upper Contact Check
