@@ -42,6 +42,10 @@ MonoBehaviour:
     linkText: 
     url: 
   - heading: 
+    text: Slide - Control / L2 Button
+    linkText: 
+    url: 
+  - heading: 
     text: Activate Speed Boost - Shift / Left Stick Button
     linkText: 
     url: 
