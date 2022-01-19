@@ -31,8 +31,13 @@ You can see a running demo of the project in [this video](https://youtu.be/myH82
 
 ## Authors
 
+Code and Art
 * **André Cardoso** - [Github](https://github.com/cardosoandre)
 <br>[![Twitter Follow](https://img.shields.io/twitter/follow/andre_mc.svg?style=social)](https://twitter.com/andre_mc)
+
+Code Review
+* **William Enders** - - [Github](https://github.com/EndersWilliam)
+<br>[![Twitter Follow](https://img.shields.io/twitter/follow/willenders_.svg?style=social)](https://twitter.com/willenders_)
 
 ## License
 
