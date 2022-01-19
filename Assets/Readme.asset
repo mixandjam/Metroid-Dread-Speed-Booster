@@ -20,15 +20,14 @@ MonoBehaviour:
     linkText: 
     url: 
   - heading: 
-    text: This project is a take on the Freeflow Combat system from the Batman Arkham
-      series of games! Includes implementations of directional combat, counter-attack
-      system and basic AI!
+    text: 'This project is a take on the Super Booster ability from the Metroid games,
+      and this version is inspired by the latest game of the franchise: Metroid Dread!'
     linkText: 
     url: 
   - heading: 
     text: 
     linkText: Watch the full overview video here
-    url: https://youtu.be/GFOpKcpKGKQ
+    url: https://youtu.be/myH829zACPQ
   - heading: Controls
     text: 
     linkText: 
