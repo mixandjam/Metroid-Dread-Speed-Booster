@@ -44,7 +44,7 @@ Material:
     - _NoiseScale: 20
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SmokeAmount: 0.245
+    - _SmokeAmount: 0.415
     - _SmokeNoiseScale: 34.99
     m_Colors:
     - _Color: {r: 813.9819, g: 126.704735, b: 267.03873, a: 1}

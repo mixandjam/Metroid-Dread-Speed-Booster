@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/BAKED/BAKED.unity
+    path: Assets/Scenes/Mix and Jam.unity
     guid: aae35ff5d9a59e7419925d2301016a6b
   m_configObjects: {}

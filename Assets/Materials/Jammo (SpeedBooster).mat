@@ -58,7 +58,7 @@ Material:
     - _ExtraBlink: 0
     - _ExtraShineAmount: 0
     - _FresnelAmount: 0
-    - _FresnelEdge: 2.12
+    - _FresnelEdge: 4.52
     - _FresnelPower: 7.7
     - _QueueControl: 0
     - _QueueOffset: 0

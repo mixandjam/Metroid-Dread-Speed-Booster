@@ -5078,7 +5078,7 @@ GameObject:
   - component: {fileID: 1463504490}
   m_Layer: 0
   m_Name: JammoPrefab
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41548,7 +41548,7 @@ GameObject:
   - component: {fileID: 3640551655460423211}
   m_Layer: 0
   m_Name: Dash
-  m_TagString: Untagged
+  m_TagString: CameraTrigger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -51313,7 +51313,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3640551655585011469}
   m_LocalRotation: {x: 0.00000009362675, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0000000011641532, y: 0.65700006, z: 0.006000007}
+  m_LocalPosition: {x: 0.0000000011641532, y: 0.65700006, z: 0.0060005183}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -90661,7 +90661,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3640551656193520986}
   m_LocalRotation: {x: 0.00000009362675, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0000000011641532, y: -0.22599995, z: 0.006000007}
+  m_LocalPosition: {x: 0.0000000011641532, y: -0.22599995, z: 0.0060005183}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -132843,7 +132843,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8109131171364142295}
   m_LocalRotation: {x: 0.000000374507, y: 7.012775e-14, z: -0.0000001872535, w: 1}
-  m_LocalPosition: {x: -0.007000007, y: 0.85399985, z: -0.18599999}
+  m_LocalPosition: {x: -0.007000007, y: 0.85399985, z: -0.18600082}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

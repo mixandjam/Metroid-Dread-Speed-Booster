@@ -2954,7 +2954,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4551081087874389163}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -2.18, y: 3.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2963,7 +2963,7 @@ Transform:
   - {fileID: 5062415924607005722}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!95 &4551081087874389162
 Animator:
   serializedVersion: 4
@@ -3044,12 +3044,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caa9f165e2b4f1a4f9522501717c095d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveAxis: {x: 0, y: 0}
   movementSpeed: 5.3
   rotationSpeed: 0.2
-  fallSpeed: 0.2
-  acceleration: 1
-  blockRotationPlayer: 0
+  gravity: -12
+  jumpHeight: 9
+  groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  canMove: 1
+  isGrounded: 0
+  isSliding: 0
+  chargeDash: 0
+  isDashing: 0
+  wallJumped: 0
+  dashBreak: 0
+  breakSpeed: 0
+  speedBreak: 0
+  breakEase: 0
+  breakParticle: {fileID: 0}
+  moveInput: {x: 0, y: 0}
+  dashVector: {x: 0, y: 0}
+  characterVelocity: 0
+  direction: 1
+  verticalVel: 0
 --- !u!1 &4619046246757020115
 GameObject:
   m_ObjectHideFlags: 0
