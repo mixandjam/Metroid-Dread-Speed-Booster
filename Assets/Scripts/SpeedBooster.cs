@@ -393,6 +393,9 @@ public class SpeedBooster : MonoBehaviour
 
     void Rumble(float duration, float lowFrequency, float highFrequency)
     {
+        if (Gamepad.current == null)
+            return;
+
         if (rumbleCoroutine != null)
         {
             StopCoroutine(RumbleSequence());
